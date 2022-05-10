@@ -82,6 +82,36 @@
 
         $campoCriaPost.value = '';
     })
+
+
+    // CRUD: [DELETE]
+    document.querySelector('.listaDePosts').addEventListener('click', function (infosDoEvento) {
+        console.log('Houve um click',);
+        const elementoAtual = infosDoEvento.target;
+        const isBtnDeleteClick = infosDoEvento.target.classList.contains('btn-delete')
+        if (isBtnDeleteClick) {
+            console.log('Clicou no botão de apagar',);
+            const id = elementoAtual.parentNode.getAttribute('data-id');
+
+
+            // Manipula o lado do ServerSide/Banco De Dados/Arquivo/Fonte!
+            miniRedeSocial.apagaPost(id);
+            // Manipula a View/o Ouput e ...
+            elementoAtual.parentNode.remove();
+
+
+            console.log(miniRedeSocial.posts);
+        }
+    })
+
+    // CRUD: [UPDATE]
+    document.querySelector('.listaDePosts').addEventListener('input', function (infosDoEvento) {
+        console.log('Houve uma digitação');
+        const elementoAtual = infosDoEvento.target;
+        const id = elementoAtual.parentNode.getAttribute('data-id');
+
+        miniRedeSocial.atualizaContentDoPost(id, elementoAtual.innerText)
+    });
     // Linguagem Pura:
     // - Cria variaveis
     // - Sincronizar o conteúdo das variáveis com o HTML
