@@ -1,1 +1,90 @@
-...
+<form>
+    <input name="campoCriaPost" placeholder="Digite o seu post" />
+    <button type="submit">Postar</button>
+</form>
+<ul class="listaDePosts">
+</ul>
+
+
+<script>
+    console.log('Ola pessoas! - Nivel 2');
+    console.log('#ConstruindoCRUDS');
+    // "MODELO"
+    const miniRedeSocial = {
+        usuarios: [
+            {
+                username: 'omariosouto',
+            }
+        ],
+        posts: [
+            {
+                id: Date.now(),
+                owner: 'omariosouto',
+                content: 'Meu primeiro tweet'
+            }
+        ],
+        readPosts() {
+            miniRedeSocial.posts.forEach(({ id, owner, content }) => {
+                miniRedeSocial.criaPost({ id, owner: owner, content: content }, true);
+            })
+        },
+        criaPost(dados, htmlOnly = false) {
+            const idInternoAqui = Date.now();
+            if (!htmlOnly) {
+                // Cria Posts na Memória (Array/Objeto)
+                miniRedeSocial.posts.push({
+                    id: dados.id || idInternoAqui,
+                    owner: dados.owner,
+                    content: dados.content
+                });
+            }
+            // Cria Post no HTML
+            const $listaDePosts = document.querySelector('.listaDePosts');
+            $listaDePosts.insertAdjacentHTML('afterbegin', `
+                <li data-id="${idInternoAqui}">
+                    <button class="btn-delete">Delete</button>
+                    <span contenteditable>
+                        ${dados.content}
+                    <span>
+                </li>
+            `);
+        },
+        apagaPost(id) {
+            const listaDePostsAtualizada = miniRedeSocial.posts.filter((postAtual) => {
+                return postAtual.id !== Number(id);
+            })
+            console.log(listaDePostsAtualizada);
+            miniRedeSocial.posts = listaDePostsAtualizada;
+        },
+        atualizaContentDoPost(id, novoConteudo) {
+            const postQueVaiSerAtualizado = miniRedeSocial.posts.find((post) => {
+                return post.id === Number(id);
+            });
+            console.log(postQueVaiSerAtualizado)
+            postQueVaiSerAtualizado.content = novoConteudo
+        }
+    };
+
+    // [Código de Front End: Web]
+    const $meuForm = document.querySelector('form');
+    console.log($meuForm);
+
+    // CRUD: [READ]
+    miniRedeSocial.readPosts();
+
+    // CRUD: [CREATE]
+    $meuForm.addEventListener('submit', function criaPostController(infosDoEvento) {
+        infosDoEvento.preventDefault();
+        console.log('Estamos criando um post novo!')
+        const $campoCriaPost = document.querySelector('input[name="campoCriaPost"]');
+
+        miniRedeSocial.criaPost({ owner: 'omariosouto', content: $campoCriaPost.value });
+
+        $campoCriaPost.value = '';
+    })
+    // Linguagem Pura:
+    // - Cria variaveis
+    // - Sincronizar o conteúdo das variáveis com o HTML
+    // - Atualiza variáveis
+
+</script>
